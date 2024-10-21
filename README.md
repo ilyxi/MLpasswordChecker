@@ -27,11 +27,65 @@ The **ML-Enhanced Password Strength Analyzer** is a web application designed to 
 3. **Responsive Design**: Whether you’re on a mobile device, tablet, or desktop, the interface adapts seamlessly to give you the best experience.
 4. **Debounced Input**: We’ve optimized the app to avoid unnecessary recalculations while typing, ensuring smooth and fast performance.
 
-## Machine Learning Model
-Our TensorFlow.js-powered model is designed for simplicity and speed, working directly in your browser:
-- **Input layer**: Takes in key password attributes such as length and character variety.
-- **Hidden layer**: A 10-neuron layer that analyzes the password’s structure with ReLU activation.
-- **Output layer**: Provides a final strength score using sigmoid activation to help predict how strong your password is.
+## Model Architecture and Design
+
+### Architecture
+
+The model uses a simple feedforward neural network, specifically a **Multi-Layer Perceptron (MLP)**, consisting of three layers:
+
+1. **Input Layer**:
+   - 5 neurons representing the following aspects of the password:
+     - Password length
+     - Presence of lowercase letters (binary: 0 or 1)
+     - Presence of uppercase letters (binary: 0 or 1)
+     - Presence of digits (binary: 0 or 1)
+     - Presence of special characters (binary: 0 or 1)
+
+2. **Hidden Layer**:
+   - 10 neurons
+   - Activation function: ReLU (Rectified Linear Unit)
+   - This layer allows the model to learn non-linear relationships between the input features.
+
+3. **Output Layer**:
+   - 1 neuron
+   - Activation function: Sigmoid
+   - Outputs a value between 0 and 1, representing the predicted strength of the password.
+
+## Model Training
+
+The model is trained on a small synthetic dataset, which is a significant limitation but serves as a proof of concept. The training data consists of 5 example passwords with varying strengths:
+
+- A strong password (length 8, all character types)
+- A weak password (length 4, only lowercase)
+- A moderate password (length 12, missing special characters)
+- A very strong password (length 16, all character types)
+- Another weak password (length 6, only lowercase and uppercase)
+
+The model is trained for 100 epochs using the Adam optimizer and binary cross-entropy as the loss function. This setup allows the model to learn the relationships between password characteristics and their corresponding strengths.
+
+## Prediction Process
+
+When a user enters a password, the following steps occur:
+
+1. The password is analyzed for its length and the presence of different character types.
+2. This information is converted into a tensor (a 1x5 matrix) representing the input features.
+3. The tensor is fed into the trained model.
+4. The model processes this input through its layers, applying learned weights and biases.
+5. The output neuron produces a value between 0 and 1, which is interpreted as the password strength.
+
+## Model Strengths
+
+- **Simplicity**: The model is lightweight and can run entirely in the browser using TensorFlow.js.
+- **Real-time predictions**: It can provide instant feedback as the user types.
+- **Considers multiple factors**: Unlike simple rule-based systems, it can potentially learn complex relationships between password characteristics.
+
+## Potential Improvements
+
+- **Larger, more diverse training dataset** using real (but hashed) passwords.
+- **Additional input features** like entropy, keyboard patterns, or dictionary word detection.
+- **More complex model architecture**, possibly using recurrent neural networks to capture sequential patterns.
+- **Integration with external APIs** to check against known breaches.
+- **Continuous learning** from user interactions to improve predictions over time.
 
 ## Project Purpose
 This project was created as an educational tool to showcase how machine learning can be integrated into web applications, particularly in the realm of cybersecurity. It highlights modern development practices like React hooks, in-browser machine learning with TensorFlow.js, and responsive design with Tailwind CSS.
